@@ -1,0 +1,7 @@
+{{#each answers}}
+    {{#if isTrue}}
+        <p style="color: green;">{{@index}}: {{text}}</p>
+    {{else}}
+        <p style="color: red;">{{@index}}: {{text}}</p>
+    {{/if}}
+{{/each}}

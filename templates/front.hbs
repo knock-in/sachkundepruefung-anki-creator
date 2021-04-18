@@ -1,0 +1,7 @@
+<b>{{title}}</b>
+{{#if img}}
+    <p><img src="{{img}}"></img></p>
+{{/if}}
+{{#each answers}}
+    <p>{{@index}}: {{text}}</p>
+{{/each}}

@@ -1,0 +1,21 @@
+{
+  "name": "sachkundepruefung-anki-creator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "createAnkiDeck": "npm run compileTemplates && node app.js",
+    "compileTemplates": "./node_modules/.bin/handlebars ./templates/*.hbs -f ./templates/templates.cjs -c handlebars"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "anki-apkg-export": "^4.0.3",
+    "cheerio": "^1.0.0-rc.6",
+    "handlebars": "^4.7.7",
+    "lodash": "^4.17.21"
+  }
+}

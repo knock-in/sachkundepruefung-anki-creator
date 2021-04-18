@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>Uebungsaufgaben fuer Sachkundenachweis 20/40 Hunde</title>
+</head>
+<body>
+  <br>
+  <script language="JavaScript">
+
+
+
+  <!--
+  //---------- last update 27.3.1998; Autor: Bernhard Jacobs , pf00bj@rz.uni-sb.de-----                                       ----------------
+  function gibfeedback (auswertung)
+  {
+        
+        var fensterbreite=300
+        var fensterhoehe=400
+          
+        version=(navigator.appVersion.charAt(0))
+        browser=navigator.appName
+        if ((version<=3) || (browser !="Netscape"))
+         {
+          
+          myfenster=window.open('','myname','toobar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width='+fensterbreite+',height='+fensterhoehe+'')
+         }
+         else
+         {
+            var bildschirmbreite=screen.availWidth+screen.availLeft
+            var xposition= bildschirmbreite-fensterbreite-12
+            var yposition= screen.availTop+20
+            myfenster=window.open('','myname','toobar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width='+fensterbreite+',height='+fensterhoehe+',screenX='+xposition+',screenY='+yposition+'')
+         }     
+        
+        ndoc= myfenster.document
+        ndoc.close()
+        ndoc.open()
+        //-------geändert am 11.10.1999 auf Vorschlag von Th. Hippchen, um das Fensterschließen in Netscape zuverlässig zu erzwingen.---------
+        astr ='<HTML><HEAD><BR><TITLE>' + 'Rückmeldung zur Aufgabe'+'<\/TITLE><\/HEAD><BODY>';
+        astr +=auswertung +'<HR>'
+        astr+='<FORM Name="myform"><input type=button name=schliessen value="Fenster schließen!" onclick= "self.close()"><\/form>'
+        astr +='<\/body><\/html>'
+        //-----------------------------------------------------------------
+        ndoc.write (astr)
+        myfenster.focus()
+  } 
+
+  function istin (muster,antwort)
+  { 
+  antwort=antwort.toUpperCase()
+  muster=muster.toUpperCase() 
+  ergebnis= antwort.indexOf(muster)
+  if (ergebnis<0) 
+    {return(false)}
+   else
+    {return (true)}
+  } 
+
+  function istgleich (antwort,muster)
+  { return (antwort == muster)
+  }
+
+  //---------- 21.1. 1999;Leerzeichen zu Beginn und am Ende aus ShortAnswer-Aufgaben eliminieren ;Autor: Bernhard Jacobs , pf00bj@rz.uni-sb.de
+  // whitespace characters
+
+  var whitespace = " \t\n\r";
+  function charInString (c, s)
+
+  {   
+  for (i = 0; i < s.length; i++)
+    {   if (s.charAt(i) == c) return true;
+    }
+    return false
+  }
+  function stripWhitespace (s)
+
+  {   var i = 0;
+   
+    while ((i < s.length) && charInString (s.charAt(i), whitespace))
+       i++;
+    s=s.substring (i, s.length)
+    i=s.length-1 
+    
+    while (charInString (s.charAt(i), whitespace))
+     {
+       s=s.substring(0,i) 
+       i--
+     }
+     return s;
+  }
+
+
+  //------------------------------------Short Answer Aufgabe---------------------------------------------------------------------
+  function shortcheck (form)
+  {
+  muster1= form.muster1.value 
+  muster2= form.muster2.value
+  muster3= form.muster3.value
+
+  form.antwort.value= stripWhitespace (form.antwort.value) 
+  antwort= form.antwort.value
+  feedback=form.feedback.value
+  vergleich=form.vergleich.value
+  auswertung=""
+  if (vergleich == "=")
+   { 
+     if ( (istgleich (antwort,muster1) || istgleich (antwort,muster2) || istgleich(antwort,muster3)) &&antwort !="" )
+       {auswertung+="<B>exakt richtig<\/B>"}
+     else
+      {auswertung+="falsch"}
+   }
+    else 
+   {
+    //antwort darf nicht nix sein; Muster kann nichts sein
+    if (((istin (muster1,antwort )&& muster1 !="") || (istin (muster2,antwort) && muster2 !="") || ( istin(muster3,antwort) && muster3 !="" )) &&antwort !=""  )
+     {auswertung+="<B>richtig<\/B>"}
+     else
+      {auswertung+="falsch"}
+   }
+  auswertung+="<HR>" +feedback
+  gibfeedback(auswertung)
+  form.bearbeitet.value="true"
+  }
+
+  function lshortcheck(form)
+  {
+  if (form.bearbeitet.value=="true" )
+  {form.antwort.value = form.muster1.value}
+  else
+  {alert('Erst die Aufgabe selbst beantworten!') }
+  }
+  //------------------------------ENDE------Short Answer-Aufgabe-------- ENDE------------------------------------------------
+
+
+  //------------------------------------Short Answer (Zahl) Aufgabe-----------------------------------------------------------
+
+  //--------------- angefügt am 1.3.2000; Bernhard Jacobs, pf00bj@rz.uni-sb.de
+  //wandle automatisch Komma in Dezimalpunkt um
+  function changekomma(s)
+  { 
+   var i=0;
+   var news=""
+   for (i=0;i<=s.length;i++)
+   {
+      if (s.substr (i,1)==",")
+      {news=news+"."}
+     
+      else
+      {news=news+s.substr (i,1)}
+      
+   }
+      return (news)
+  }
+
+  function mathshortcheck (form)
+  {
+  muster= form.muster.value 
+  ergebnisart= form.ergebnisart.value
+  toleranz = form.toleranz.value
+
+  form.antwort.value= stripWhitespace (form.antwort.value) 
+  form.antwort.value= changekomma(form.antwort.value)
+  antwort=form.antwort.value
+  feedback=form.feedback.value
+  auswertung=""
+
+  if (ergebnisart != "Zahl")
+     { antwort=eval(antwort) }
+  if  (!isNaN (antwort) && !antwort=="")
+   { 
+     betrag = Math.abs (muster-antwort)
+
+   if (betrag <=toleranz)
+     {auswertung+="<B>richtig<\/B>"}
+    else
+     {auswertung+="falsch"}
+   }
+   else
+   {auswertung+="falsch"} 
+
+
+  auswertung+="<HR>" +feedback
+  gibfeedback(auswertung)
+  form.bearbeitet.value="true"
+  }
+
+  function mathlshortcheck(form)
+  {
+  if (form.bearbeitet.value=="true" )
+  {form.antwort.value = form.muster.value}
+  else
+  {alert('Erst die Aufgabe selbst beantworten!') }
+  }
+  //------------------------------ENDE------Short Answer-(Zahl) Aufgabe ---- ENDE------------------------------------------------
+  //------------------------------------Simple MC-Aufgabe----------------------------------------------------------------------------
+  function mccheck (form)
+  { 
+  auswertung=""
+  n = form.mc.length
+  for (i=0;i<n;i++)
+  { 
+    itemnummer= i+1
+
+    if (form.mc[i].value ==1)
+       {
+         korrekt=itemnummer
+         if (form.mc[i].checked==true)
+          {  auswertung+="<B>richtig<\/B><BR><HR>"}
+         else
+          { auswertung+= "<B>falsch<\/B> beantwortet <BR>Alternative "+korrekt+ " ist richtig <HR>"} 
+        }
+    }
+    auswertung+=form.feedback.value
+    gibfeedback (auswertung)
+    form.bearbeitet.value="true"
+  }
+
+  function lmccheck(form)
+  {
+  if (form.bearbeitet.value=="true" )
+  {
+    n = form.mc.length
+    for (i=0;i<n;i++)
+    //{ form.mc[i].checked=false}
+    //for (i=0;i<n;i++)
+    { 
+       if (form.mc[i].value ==1)
+       { form.mc[i].checked=true
+         break}
+    }
+  }
+  else
+  {alert('Erst die Aufgabe selbst beantworten!') }
+  }
+  //------------------------------ENDE------Simple MC-------- ENDE------------------------------------------------
+  //------------------------------------Multiple MC-Aufgabe in Checkboxen-----------------------------------------
+
+  function boxcheck (form)
+  {
+   feedback=form.feedback.value
+   n = form.box.length
+   richtalt=0
+   anzrichtig=0
+   anzfalsch=0
+   auswertung=""
+   for (i=0;i<n;i++)
+  { 
+    itemnummer= i+1
+
+    if (form.box[i].value ==1)
+     {
+        richtalt=richtalt+1
+        auswertung=auswertung+" richtig sind :"+itemnummer
+
+        if (form.box[i].checked==true)
+           {  auswertung=auswertung+" ok "+"<BR>" 
+             //alert (itemnummer +" ist richtig")
+             anzrichtig=anzrichtig+1
+           }
+          else
+           {
+             auswertung=auswertung+" - "+"<BR>" 
+           }
+       }
+   }
+   auswertung+="<HR>"
+   for (i=0;i<n;i++)
+   { 
+    itemnummer= i+1
+     if (form.box[i].value ==0)
+      {
+          if (form.box[i].checked==true)
+          {  auswertung=auswertung+" falsch beantwortet :"+itemnummer+"<BR>" 
+              anzfalsch=anzfalsch+1
+           }
+       } 
+    }
+    if ((anzrichtig==richtalt)  && (anzfalsch==0))
+    {auswertung+="<B>alles richtig<\/B>"}
+    auswertung+="<HR><PRE>"
+    auswertung+="                        Anzahl <BR>"
+    auswertung+= "zutreffende Alternativen: "+richtalt+"<BR>"
+    auswertung+= "      richtige Antworten: "+ anzrichtig+"<BR>" 
+    auswertung+= "       falsche Antworten: "+ anzfalsch +"<BR>"
+    auswertung+="<\/PRE><HR size=3>"+feedback
+    gibfeedback(auswertung)
+    form.bearbeitet.value="true"
+  }
+
+
+  function lboxcheck(form)
+  {
+  if (form.bearbeitet.value=="true" )
+  {
+    n = form.box.length
+    for (i=0;i<n;i++)
+    { form.box[i].checked=false}
+    for (i=0;i<n;i++)
+    { 
+       if (form.box[i].value ==1)
+       { form.box[i].checked=true}
+    }
+  }
+  else
+  {alert('Erst die Aufgabe selbst beantworten!') }
+  }
+  //------------------------------ENDE------Multiple MC-Aufgabe----- ENDE------------------------------------------------
+  //------------------------------------Essay-Test-Aufgabe-------------------------------------------------------------------------
+  function essay(form)
+  {
+  auswertung="<b>Vergleiche deine Antwort!<HR><\/b>"
+  auswertung+=form.feedback.value
+  hinweis="<HR>"
+  hinweis+='<b><a href="javascript:alert(\'Es hat sich als sinnvoll erwiesen, im Falle einer falschen Beantwortung die eigene Antwort selbst zu verbessern und die richtige Lösung eigenständig zu formulieren!\')">Hinweis!<\/a><\/b>'
+  auswertung+=hinweis
+  gibfeedback(auswertung)
+  form.bearbeitet.value="true"
+  }
+
+  function lessay(form)
+  {
+  if (form.bearbeitet.value=="true" )
+   {auswertung="<b>Vergleiche deine Antwort!<HR><\/b>"
+    auswertung+=form.feedback.value
+    hinweis="<HR>"
+    hinweis+='<b><a href="javascript:alert(\'Sollte Ihre Antwort nicht mit dieser Rückmeldung übereinstimmen, dann sollten Sie Ihre Antwort löschen und anschließend die richtige Lösung selbst eintippen!\')">Hinweis!<\/a><\/b>'
+    auswertung+=hinweis     
+    gibfeedback(auswertung)
+    }
+    else
+    {alert('Erst die Aufgabe selbst beantworten!') }
+  }
+
+
+  //------------------------------ENDE------Essay-Test-Aufgabe-------- ENDE------------------------------------------------
+  //----------------------------------------------- --Grafikaufgabe-------------------------------------------------------------------
+  // Vorzeitiges Feedback ohne Beantwortung kann nicht gaenzlich ausgeschlossen
+  var grafbearbeitet="false"
+  function meldung (zahl,info)
+  {
+  if (zahl=="1") 
+  alert ('richtig \n'+ info)
+  else
+  {alert ('falsch \n'+ info)}
+  grafbearbeitet="true" 
+  }
+
+  function graphfeedback (form)
+  {
+  if (grafbearbeitet=="true" || form.bearbeitet.value=="true")
+  {auswertung=""
+    auswertung+=form.feedback.value
+    gibfeedback(auswertung)
+    form.bearbeitet.value="true"
+    grafbearbeitet="false"
+   }
+   else
+     {alert("Erst selbst durch Mausklick die Aufgabe beantworten!")
+     }
+  }
+  //--------------------------Ende Grafikaufgabe------------------------------------
+  //-->
+
+  </script>
+  <p></p>
+  <hr width="100%">
+  <center>
+    <a href="https://ralfcasino.com/"><img src="https://ralfcasino.com/logo.png" border="0" alt="ralfcasino.com"></a> <a href="https://unipoker.at/"><img src="https://unipoker.at/logo.png" border="0" alt="unipoker.at"></a>
+  </center>
+  <h1>Fragen zum Sachkundenachweis für 20/40-Hunde</h1><br>
+  Seite 1 von 6
+  <hr>
+  <form>
+    <p><b>Fragebogen 1 - Frage 1</b></p>
+    <p><b>Welches Tier ist der Urahn des heutigen Hundes?</b></p>
+    <p>1)&nbsp;<input type="radio" name="mc" value="0">Der Goldschakal<br>
+    2)&nbsp;<input type="radio" name="mc" value="1">Der Wolf<br>
+    3)&nbsp;<input type="radio" name="mc" value="0">Der Kojote<br>
+    4)&nbsp;<input type="radio" name="mc" value="0">Der Dingo</p>
+    <p><input type="hidden" name="feedback" value="Antwort 2 ist richtig"> <input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="mccheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lmccheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 1 - Frage 14</b></p>
+    <p><b>Bis zu welchem Alter bezeichnet man Hunde als Welpen"?</b></p>
+    <p>1)&nbsp;<input type="radio" name="mc" value="0">Bis zu einem Jahr.<br>
+    2)&nbsp;<input type="radio" name="mc" value="1">Von Geburt an bis zum Abschluss der Prägephase (Sozialisationsphase), also ca. bis zum Abschluss des 4. Lebensmonats.<br>
+    3)&nbsp;<input type="radio" name="mc" value="0">Bis zur Geschlechtsreife<br>
+    4)&nbsp;<input type="radio" name="mc" value="0">Bis sie nicht mehr gesäugt werden.</p>
+    <p><input type="hidden" name="feedback" value="Antwort 2 ist richtig"> <input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="mccheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lmccheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 1 - Frage 32</b></p>
+    <p><b>Woran kann man erkennen, ob sich ein Hund einem anderen gegenüber dominant verhält?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Er legt sich auf die Seite und wedelt..<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Er macht sich groß (Schwanz hoch, Ohren nach vorne, steifer Gang) und weicht Blickkontakt nicht aus.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Er bellt und legt die Ohren an.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Er legt die Schnauze oder Pfote auf den Rücken des anderen Hundes.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 1 - Frage 50</b></p>
+    <p><b>Wer wäre der beste Ansprechpartner, wenn es zu Problemen im Zusammenleben kommt?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Der Züchter oder ein anderer Halter derselben Rasse.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Ein Tierarzt, der sich auf Verhalten spezialisiert hat.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Ein anderer Hundebesitzer, der seinen Hund gut unter Kontrolle hat.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Ein moderner und erfahrener Hundetrainer, der im Bereich Problemverhalten speziell geschult ist.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 1 - Frage 68</b></p>
+    <p><b>Ihr frei laufender Hund kommt auf Ihr Rufen nicht zurück. Was kann man tun?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="1">Sich so verstecken, dass man den Hund noch sehen kann und den Hund dann nach einiger Zeit aus dem Versteck heraus noch einmal rufen. Außerdem einen Gehorsamskurs buchen, denn das Rückrufkommando sollte klappen.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Schnell in die entgegengesetzte Richtung davonrennen und sich so für den Hund interessant machen. Außerdem schnellstmöglich Rat einholen bei einem erfahrenen und modernen Hundeausbilder, der Hunde über positive Trainingstechniken erzieht.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Versuchen, den Hund einzufangen. Solch einen Hund kann man nie wieder ableinen.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Den Hund laut anschreien und mit Strafen drohen, damit er Angst bekommt und herankommt. Wenn der Hund schon älter ist, kann man nichts mehr machen.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 1 und 2 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 2 - Frage 79</b></p>
+    <p><b>Was kann passieren, wenn man einen Hund als Erziehungsmaßnahme häufig und hart bestraft?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Er wird die Übung schnell und zuverlässig ausführen, denn so lernt er, dass er brav sein muss.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Er kann scheu und unsicher werden, weil er kein Vertrauen mehr zu seinem Besitzer hat.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Es passiert nichts Schlimmes. Hunde untereinander verhalten sich auch rigoros. Der Hund wird also große Freude bei den Übungen haben, wenn er erst verstanden hat, worum es geht.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Er könnte unter Umständen aggressiv reagieren, weil er sich bedroht fühlt.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 2 - Frage 106</b></p>
+    <p><b>Auf dem Hundespaziergang kommt einem ein Reiter entgegen. Wie soll man sich verhalten?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Wenn der Hund Pferde kennt, braucht man nichts zu unternehmen, denn dann hat der Hund keine Angst.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Man sollte den Hund heranrufen und an die Leine nehmen, bis Pferd und Reiter vorbei sind und man sicher weiß, dass der Hund nicht hinterherrennen wird.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Wenn der Reiter nur "Schritt" reitet, ist keine Gefahr gegeben, denn das langsame Reiten verleitet nicht zum Jagen.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Man sollte seinen Hund grundsätzlich unter Kontrolle nehmen, da manche Pferde auch bei ruhigen und freundlichen Hunden ängstlich reagieren und dadurch Unfälle entstehen können.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 2 - Frage 123</b></p>
+    <p><b>Sollte man, wenn man einen Hund übernimmt, mit dem Hund zum Tierarzt gehen, auch wenn der Hund einen gesunden Eindruck macht?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="1">Ja, damit der Tierarzt anhand des Impfpasses überprüfen kann, ob der Hund ausreichend geimpft ist.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Ja, damit sich der Hund an den Tierarzt und die Abläufe in der Praxis gewöhnt.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Nein, so etwas ist nicht notwendig und reine Geldverschwendung.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Ja, damit der Tierarzt den Hund möglichst auch einmal gesund kennen lernen kann. Er kann dann krankheitsbedingtes Verhalten besser einordnen.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 1, 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 2 - Frage 151</b></p>
+    <p><b>Warum ist es wichtig, seinen Hund regelmäßig gegen Tollwut impfen zu lassen?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Die Tollwutimpfung ist gesetzlich vorgeschrieben.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Tollwut ist eine Infektionskrankheit, mit der sich auch Menschen infizieren können.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Eine Tollwutimpfung ist überflüssig Tollwut kommt in Deutschland überhaupt nicht mehr vor.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Tollwutgeimpfte Hunde stehen gesetzlich besser da als ungeimpfte.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 4 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 2 - Frage 162</b></p>
+    <p><b>Welchen Ausdruck zeigt dieser Hund?</b></p>
+    <p><img src="Frage65i.gif" width="298" height="185"></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Der Hund ist neutral bis aufmerksam.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="0">Der Hund ist ängstlich<br>
+    3)&nbsp;<input type="checkbox" name="box" value="1">Der Hund droht selbstsicher.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Der Hund ist unterwürfig</p>
+    <p><input type="hidden" name="feedback" value="Antwort 3 ist richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 3 - Frage 2</b></p>
+    <p><b>Sind alle Hunde gleich oder gibt es rassetypische Eigenschaften?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Alle Hunde sind gleich.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Je nach Rasse weisen die Hunde unterschiedliche Veranlagungen auf.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Verschiedene Rassen unterscheiden sich nur durch ihr äußeres Erscheinungsbild.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Rassetypische Eigenschaften gibt es nicht, aber anhand der Größe kann man eine Einteilung in "kinderfreundlich", "gefährlich", "leicht zu erziehen" etc. treffen.</p>
+    <p><input type="hidden" name="feedback" value="Antwort 2 ist richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 3 - Frage 15</b></p>
+    <p><b>Welche Auswirkung hat häufige und lange Zwingerhaltung auf die Wesensentwicklung des Welpen?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">So lernt der Hund gut alleine zu bleiben.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Defizite im Sozialverhalten gegenüber Menschen und Artgenossen.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="1">Probleme im Bereich des häuslichen Sauberkeitstrainings.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Die gesundheitliche Widerstandskraft ist größer.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 3 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 3 - Frage 33</b></p>
+    <p><b>Was bedeutet es, wenn ein Hund einem anderen den Kopf auf den Rücken legt?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Er ist unterwürfig.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="0">Er macht eine Spielaufforderung.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Er ist müde.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="1">Es ist eine Imponiergeste.</p>
+    <p><input type="hidden" name="feedback" value="Antwort 4 ist richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 3 - Frage 51</b></p>
+    <p><b>Was hat für Hunde die größte Bedeutung im Bereich der Rangfolge?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="1">Aufmerksamkeit (Spiel, Futter, Zuwendung) fordern zu können.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="0">Täglich mehrmals rausgehen zu dürfen.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="0">Einen gemütlichen, ggf. erhöhten Liegeplatz zu haben.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Spielzeug zur freien Verfügung zu besitzen.</p>
+    <p><input type="hidden" name="feedback" value="Antwort 1 ist richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form>
+  <p></p>
+  <hr>
+  <form>
+    <p><b>Fragebogen 3 - Frage 69</b></p>
+    <p><b>Besteht die Gefahr, durch Strafen einen Hund so zu schockieren, dass er das Vertrauen in einen verliert?</b></p>
+    <p>1)&nbsp;<input type="checkbox" name="box" value="0">Nein, nicht wenn man vorher ein gutes Verhältnis hatte.<br>
+    2)&nbsp;<input type="checkbox" name="box" value="1">Ja, bei sensiblen Hunden manchmal sogar mit Kleinigkeiten, besonders wenn die Handlung für den Hund "unlogisch" ist.<br>
+    3)&nbsp;<input type="checkbox" name="box" value="1">Ja, durch inkonsequentes und launisches Vorgehen.<br>
+    4)&nbsp;<input type="checkbox" name="box" value="0">Nur bei generell ängstlichen Hunden.</p>
+    <p><input type="hidden" name="feedback" value="Antworten 2 und 3 sind richtig."><input type="hidden" name="bearbeitet" value="false"><input type="button" name="Aufgabe" value="Aufgabe bestätigen" onclick="boxcheck(this.form)"><input type="button" name="Lösung" value="Korrekte Lösung?" onclick="lboxcheck(this.form)"></p>
+  </form><a href="test2.html">Nächste Seite</a><br>
+  <br>
+  <br>
+  <div id="fde-slot-calc-kuvert"></div>
+  <script type="text/javascript">
+  /* <![CDATA[ */    var fde = fde || [];    fde.config = fde.config || [];    fde.config.siteKey = "httpwwwroadsterspassde";    fde.config.productId = "thv";        fde.config.subProductId = "thv_h";        fde.config.designId = "6031";            fde.tracking = fde.tracking || [];    fde.tracking.affiliateCampaignCode = null;    var fdeJsHost = (("https:" == document.location.protocol) ? "https://" : "http://");    document.write(unescape("%3Cscript src='" + fdeJsHost + "finanzen.de/s/kuvert/js/sachrechner/gwtSachrechner.MainXS.nocache.js' type='text/javascript'%3E%3C/script%3E"));    /* ]]> */
+  </script><iframe src="javascript:''" id='__gwt_historyFrame' style='position:absolute;width:0;height:0;border:0' name="__gwt_historyFrame"></iframe>
+</body>
+</html>
